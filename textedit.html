@@ -1,0 +1,160 @@
+
+<div id="main">
+
+    <meta name="author" content="Harvey Lelliott">
+
+    <div id="textWindow" onload="onLoad();">
+    </div>
+
+    <div id="bottomWindow">
+
+        <div id="bottomWindowContainer">
+
+             <!-- This is non functional, cosmetic only -->
+            <div class="bottomWindowItem">
+                Plain Text
+            </div>
+
+             <!-- This is non functional, cosmetic only -->
+            <div class="bottomWindowItem">
+                Down
+            </div>
+
+             <!-- This is non functional, cosmetic only -->
+            <div class="bottomWindowItem">
+                Tab Width: 8
+            </div>
+
+            <!-- This is non functional, cosmetic only -->
+            <div class="bottomWindowItem">
+                Ln 10, Col 1
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    /* This is the root element */
+    #main {
+        height: 100%;
+        width: 100%;
+    }
+
+    /* This is the styling for the div that holds the text*/
+    #textWindow {
+        font-size: 16px;
+        font-family:monospace;
+    }
+    
+    /* This is the styling for the menu bar at the bottom */
+    #bottomWindow {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #E6E6E5;
+    }
+
+    /* This is the styling for the menu bar container at the bottom */
+    /* This holds the text type indicator, tab width setting, and, line and col indicator */
+    #bottomWindowContainer {
+        text-align: right;
+    }
+
+    /* This is the styling for an item in the bottom menu, e.g the line and col indicator */
+    .bottomWindowItem {
+        display: inline-block;
+        margin-left: 10px;
+        font-family: 'Cantarell', sans-serif;
+        font-size: small;
+    }
+
+</style>
+
+<script>
+
+    //This is needed when hosted on the University Of Manchester's Personal Pages 
+    //The onload in the main element doesn't work for some reason
+    window.onload = function() {
+        onLoad();
+    }
+
+    // This runs when the window loads and loads the content
+    function onLoad() {
+
+        console.log("Text Edit is running!");
+        url = new URL(location.href);
+        console.log("The URL of Text Edit is: " + location.href);
+        //The directory of the file to be opened is encoded in the URL
+        fileDirectory = url.searchParams.get("directory");
+        console.log("Text Edit is to open a file at: " + fileDirectory);
+        //This finds what text should be displayed from a dictionary based upon the URL
+        text = textDatabase(fileDirectory);
+        console.log("Text Edit Content: " + text);
+        //This loads the text into the text window
+        printText(text);
+    }
+
+
+    //This finds what text should be displayed from a dictionary based upon the URL
+    //This would be a lot cooler if it could load actual .txt files
+    //This is not done because I would have to make a get request to get it, which would take even longer to program
+    function textDatabase(fileDirectory) {
+        //We have a default in case the file doesn't exist in the dictionary
+        text = "none!";
+        switch(fileDirectory) {
+            case("/Desktop/readme.txt"):
+                text = "This is the website I made for a group project in my foundation year in computer science.";
+                text = text + "\nThe goal of the project was to create a website to help people new to the foundation year.";
+                text = text + "\nI recommend you view this website in Firefox as that is what this was tested in.";
+                text = text + "\nOverall I am happy with how this turned out, now go explore the site!";
+                text = text.replaceAll("\n", "<br>");
+                break;
+            case("/sources.txt"):
+                text = "/Key Dates.url - University Website";
+                text = text + "\n/Pictures/Foundation Year 2021-2022.jpg - VCR Blackboard";
+                text = text + "\n/Videos/Tour of Campus.url - University YouTube Channel";
+                text = text + "\n/Documents/General Intro.pdf - VCR Blackboard";
+                text = text + "\n/Documents/ICT Academic Project Intro.pdf - VCR Blackboard";
+                text = text + "\n/Documents/Maths Intro.pdf - VCR Blackboard";
+                text = text + "\n/Documents/Physics Intro.pdf - VCR Blackboard";
+                text = text + "\n/Documents/Students Union Intro.pdf - VCR Blackboard";
+                text = text + "\n/Documents/How to Pass.pdf - VCR Blackboard"
+                text = text + "\n/Important stuff to know.pdf - from group";
+                text = text + "\nThe Icons are taken from the Adwaita theme (what UOM linux uses)";
+                text = text + "\n\n TL;DR all the content viewed in the image reader, pdf reader, and web browser is not ours except for Important stuff to know.pdf";
+                text = text.replaceAll("\n", "<br>");
+                break;
+            case("/Downloads/Linux ISOs/best tv.txt"):
+                text = "Best TV Shows tier list: (in order)";
+                text = text + "\nThe Expanse - quite possibly the best sci-fi series ever (its realistic sci-fi)";
+                text = text + "\nMr. Robot - the most accurate tv show about a hacker and hacking that I know of";
+                text = text + "\nAir Crash Investigation - one of the best produced documentary type series";
+                text = text + "\nBetter Call Saul";
+                text = text + "\nBarry";
+                text = text + "\nBreaking Bad";
+                text = text + "\nThe IT Crowd";
+                text = text + "\nAlex Rider";
+                text = text + "\nJack Ryan";
+                text = text + "\nPolice Squad!";
+                text = text + "\n\nStrange how the best tv series seem to have come out in 2015, right?";
+                text = text.replaceAll("\n", "<br>");
+                break;
+        }
+
+        return text;
+    }
+
+
+    //This puts the text into the text window
+    function printText(text) {
+        textWindow = document.getElementById("textWindow");
+        textWindow.innerHTML = text;
+    }
+
+</script>
+        

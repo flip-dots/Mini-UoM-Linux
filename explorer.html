@@ -1,0 +1,459 @@
+<body id="body">
+
+    <meta name="author" content="Harvey Lelliott">
+
+    <div id="main" onload="onLoad();">
+
+        <!-- This is the left sidebar which contains the shortcuts to folders -->
+        <div id="navigationTab">
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Recent');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/document-open-recent-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Recent
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/user-home-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Home
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Documents');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/folder-documents-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Documents
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Downloads');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/folder-download-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Downloads
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Music');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/folder-music-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Music
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Pictures');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/emblem-photos-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Pictures
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Videos');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/video-x-generic-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Videos
+                </div>
+            </div>
+
+            <!-- This is an entry in the left sidebar -->
+            <!-- You can add your own, just set where you want to go in the onclick -->
+            <div class="navigationTabItem" onclick="onFolderFileClick('/Wastebasket');">
+                <!-- This is the icon of the folder -->
+                <img class="navigationTabItemIcon" src="resources/user-trash-symbolic.svg">
+                </img>
+                <div class="navigationTabItemText">
+                    <!-- This is the name of the folder -->
+                    Wastebasket
+                </div>
+            </div>
+
+        </div>
+
+        <div id="filesTab">
+
+            <!-- This is the bit where folders are added -->
+            <div id="foldersAndFilesContainer">
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+<!-- This is where the magic happens -->
+<script>
+
+    //This is needed when hosted on the University Of Manchester's Personal Pages 
+    //The onload in the main element doesn't work for some reason
+    window.onload = function() {
+        onLoad();
+    }
+
+    //This runs when the window loads
+    function onLoad() {
+        console.log("File Explorer is running!");
+        console.log("The URL of the File Explorer is: " + location.href);
+
+        urlString = location.href;
+        url = new URL(urlString);
+        //we find where we should navigate to in the URL
+        fileExplorerDirectory = url.searchParams.get("directory");
+        window.name = fileExplorerDirectory;
+        console.log("File Explorer will navigate to this directory: " + fileExplorerDirectory);
+
+        //This finds what folders and files belong in the given directory
+        foldersAndFiles = returnDirectoryStructure(fileExplorerDirectory);
+        //This is the div in which we add our generated file and folder div's
+        foldersAndFilesContainer = document.getElementById("foldersAndFilesContainer");
+
+        for(i=0; i < foldersAndFiles.length; i++) {
+
+            folderOrFile = foldersAndFiles[i];
+
+            if(!folderOrFile.includes(".")) {
+                // This means that this is a folder
+                console.log("There is a folder in this directory: " + folderOrFile);
+                //This makes a folder div, adds the icon, and sets up the onclick for that folder
+                folder = generateFolder(folderOrFile, fileExplorerDirectory);
+                //This adds the folder to the folders and files view
+                foldersAndFilesContainer.append(folder);
+
+            } else {
+                //This means that it is a file of some sorts!
+                console.log("There is a file in this directory: " + folderOrFile);
+                //This makes a file div, adds the icon, and sets up the onclick for that file
+                file = generateFile(folderOrFile, fileExplorerDirectory);
+                //This adds the file to the folders and files view
+                foldersAndFilesContainer.append(file);
+            }
+        }
+    }
+
+
+    //This returns the files and folders that are at a given path
+    function returnDirectoryStructure(path) {
+
+        foldersAndFiles = [];
+        switch(path) {
+            case("/"):
+                foldersAndFiles = ["Desktop", "sources.txt", "YouTube.url", "Key Dates.url", "Pathways", "Group Member Content", "Weather", "debug"];
+                break;
+            case("/Group Member Content"):
+                foldersAndFiles = ["Manchester.rain", "Important stuff to know.pdf"];
+                break;
+            case("/debug"):
+                foldersAndFiles = ["http_test.url", "https_test.url", "nested folder"];
+                break;
+            case("/debug/nested folder"):
+                foldersAndFiles = ["child folder 1", "child folder 2", "child folder 3"];
+                break;
+            case("/Weather"):
+                foldersAndFiles = ["Lightning.url", "Radar.url", "Satellite.url"];
+                break;
+            case("/Desktop"):
+                foldersAndFiles = ["readme.txt"];
+                break;
+            case("/Recent"):
+                foldersAndFiles = ["fuxsocy.py"];
+                break;
+            case("/Documents"):
+                foldersAndFiles = ["General Intro.pdf", "ICT Academic Project Intro.pdf", "Maths Intro.pdf", "Physics Intro.pdf", "Students Union Intro.pdf", "How to Pass.pdf"];
+                break;
+            case("/Downloads"):
+                foldersAndFiles = ["Linux ISOs", "Group Project Criteria.pdf"];
+                break;
+            case("/Downloads/Linux ISOs"):
+                foldersAndFiles = ["mr_robot_s01-s04_1080p_x264_(2015).torrent", "the_expanse_s01-s06_2160p_amzn_x265_(2015).torrent", "better_call_saul_s01_1080p_x264_(2015).torrent", "best tv.txt"];
+                break;
+            case("/Music"):
+                foldersAndFiles = ["Hacking Music.mp3", "Crab Rave.mp3"];
+                break;
+            case("/Pictures"):
+                foldersAndFiles = ["Foundation Year 2021-2022.jpg", "Progression Flowchart.jpg", "Super Unit Diagram 21-22.png", "Project Summary.jpg"];
+                break;
+            case("/Videos"):
+                foldersAndFiles = ["Tour of Campus.url", "Random youtube lectures.url", "Welcome video.url"];
+                break;
+            case("/Wastebasket"):
+                foldersAndFiles = ["My hopes and dreams.txt", "Any hope of passing this year.txt", "system32"];
+                break;
+            case("/Pathways"):
+                foldersAndFiles = ["Computer Science.url"]; //there is only one pathway that matters...
+                break;
+            }
+        return foldersAndFiles;
+    }
+
+
+    //This makes a folder div, adds the icon, and sets up the onclick for that folder
+    function generateFolder(name, path) {
+        console.log("The folders name is: " + name);
+        console.log("The folders path is: " + path);
+
+        //Since we don't want two /'s
+        if(path == "/") {
+            path = "";
+        }
+        fullFolderPath = path + "/" + name;
+        console.log("The path of this folder is: " + fullFolderPath);
+
+        folder = document.createElement("div");
+        folder.className = "folderFileContainer";
+        folder.id = fullFolderPath;
+        //Mobile browsers do not support double clicks, so it has to be a single click
+        let eventName = "dblclick";
+        if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            eventName = "click";
+        }
+        folder.addEventListener(eventName, function() { 
+            onFolderFileClick(); 
+        });
+        
+        //This adds the folder icon
+        folderIcon = document.createElement("img");
+        folderIcon.className = "folderFileIcon";
+        folderIcon.src = "resources/folder.png";
+        //This adds the name of the folder
+        folderText = document.createElement("div");
+        folderText.className = "folderFileText";
+        folderText.innerHTML = name;
+
+        //This adds the icon and name to the folder
+        folder.appendChild(folderIcon);
+        folder.appendChild(folderText);
+        return folder;
+    }
+
+
+    //This makes a file div, adds the icon, and sets up the onclick for that file
+    function generateFile(name, path) {
+        console.log("The files name is: " + name);
+        console.log("The files path is: " + path + name);
+
+        fullFilePath = path + "/" + name;
+        //this makes sure we don't have a filepath with // which can occur in the root/home directory
+        if(fullFilePath.substring(fullFilePath.indexOf("/")).indexOf("/") != 0) {
+            console.log("This file is not in the root directory")
+            fullFilePath = path + "/" + name;
+        }
+
+        file = document.createElement("div");
+        file.className = "folderFileContainer";
+        file.id = fullFilePath;
+        //Mobile browsers do not support double clicks, so it has to be a single click
+        let eventName = "dblclick";
+        if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        eventName = "click";
+        }
+        file.addEventListener(eventName, function() { 
+            onFolderFileClick(); 
+        });
+
+        //This adds the file icon
+        fileIcon = document.createElement("img");
+        fileIcon.className = "folderFileIcon";
+        //findFileIcon finds out which icon it should use for the file type
+        fileIcon.src = findFileIcon(name);
+        //This adds the file name
+        fileText = document.createElement("div");
+        fileText.className = "folderFileText";
+        fileText.innerHTML = name;
+        
+        //This adds the icon and name to the file
+        file.appendChild(fileIcon);
+        file.appendChild(fileText);
+        return file;
+    }
+
+    //This function sets the windows URL to the path of the file or folder
+    //this will cause the windowUpdate() function in default.htm to trigger
+    //the windowUpdate() function will then open a new window if the path is of a file and send file explorer to its previous directory
+    function onFolderFileClick(filepath) {
+        //This is in case it was a sidebar button that triggered it, you need to find the id differently in that case
+        if(filepath == null) {
+            filepath = event.srcElement.parentNode.id;
+        }
+        console.log("folder or file clicked in File Explorer: " + filepath);
+        arguments = "?directory=" + filepath;
+        newUrl = "explorer.html" + arguments; 
+        console.log("File Explorer will now redirect to: " + newUrl);
+        window.name = filepath;
+        location.href = newUrl;
+    }
+
+    //This function finds the appropriate icon for a given filetype
+    //Not all of these filetypes are supported
+    function findFileIcon(filename){
+        if(filename.includes(".url") || filename.includes(".html")){
+            return "resources/text-html.png";
+        }
+        else if(filename.includes(".txt")){
+            return "resources/text-x-generic.png";
+        }
+        else if(filename.includes(".docx") || filename.includes(".pdf")){
+            return "resources/x-office-document.png";
+        }
+        else if(filename.includes(".mp3")){
+            return "resources/audio-x-generic.png";
+        }
+        else if(filename.includes(".png")){
+            return "resources/x-office-drawing.png";
+        }
+        else if(filename.includes(".jpg")){
+            return "resources/x-office-drawing.png";
+        }
+        else if(filename.includes(".mp4")){
+            return "resources/video-x-generic.png";
+        }
+        else if(filename.includes(".torrent")){
+            return "resources/transmission-file-icon.png"; //source https://commons.wikimedia.org/wiki/File:Transmission_torrent.png
+        }
+        else if(filename.includes(".py")){
+            return "resources/text-x-python.png"; 
+        }
+        else if(filename.includes(".rain")){
+            return "resources/weather-showers-scattered.png"; 
+        }
+        else if(filename.includes(".ppt")){
+            return "resources/x-office-presentation.png";
+        } else {
+            return null;
+        }
+    }
+
+</script>
+
+<style>
+
+    /* This is the root element */
+    #body {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    /* This contains the navigation tab and the tab where files and folders are put */
+    #main {
+        padding: 0px;
+        margin: 0px; /* not sure if padding or margin is needed */
+        width: 100%;
+        height: 100%;
+    }
+
+    /* navigation tab styling */
+
+        /* This is styling for the tab that holds Recent, Home, Documents, etc */
+        #navigationTab {
+            float: left;
+            background: #F0F0F0;
+            height: 100%;
+            width: 150px;
+        }
+
+        /* This is the styling for an individual entry in the navigation tab */
+        .navigationTabItem {
+            padding: 10px;
+            height: 30px;
+            background-color: #F0F0F0;
+        }
+
+        /* This makes the navigation tab item change colours when clicked */
+        .navigationTabItem:active {
+            background-color: #4A90D9;
+        }
+
+        /* This is styling for the icon of the navigation tab item */
+        .navigationTabItemIcon {
+            float: left;
+            padding-right: 10px;
+            height: 20px;
+            transform: translate(0%, 50%);
+        }
+
+        /* This is styling for the name of the folder in the navigation tab */
+        .navigationTabItemText {
+            float: left;
+            line-height: 40px;
+            text-align: center;
+            font-family: 'Cantarell', sans-serif;
+        }
+    
+    /* end of navigation tab styling */
+
+    /* Files and Folders area styling */
+
+        /* This is the tab that holds the folders and files of the current directory */
+        #filesTab {
+            float: left;
+            height: 100%;
+            width: calc(100% - 150px)
+        }
+
+        /* This is the styling for the container that holds all the folders and files */
+        #foldersAndFilesContainer {
+            float: left;
+            height: 100%;
+            max-height: 100%;
+        }
+
+        /* This is the styling for the container that holds the icon and name of the folder */
+        .folderFileContainer {
+            float: left;
+            padding-left: 40px;
+        }
+
+        /* This is the styling for the icon of the folder or file */
+        .folderFileIcon {
+            width: 80px;
+            height: 80px;
+        }
+
+        /* This is the styling for the name of the folder or file */
+        .folderFileText {
+            text-align: center;
+            font-family: 'Cantarell', sans-serif;
+            font-size: small;
+            inline-size: 80px;
+            overflow-wrap: break-word;
+        }
+
+    /* end of folder and files tab styling */
+
+</style>
+        
