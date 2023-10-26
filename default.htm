@@ -18,8 +18,8 @@
   <!-- This is where the magic happens -->
   <script>
 
-    //this script sets up the onclick and dragging of desktop icons
-    //and starts the loop that keeps the clock updated
+    // This script sets up the onclick and dragging of desktop icons, opens
+    // the welcome screen, and starts the loop that keeps the clock updated
     function onLoad() {
 
       //so we only run scripts when everything is loaded
@@ -34,29 +34,29 @@
 
         for(i=0; i < desktopIcons.length; i++) {
 
-          //path is the directory of the folder/file that would open if clicked
+          // Path is the directory of the folder/file that would open if clicked
           let path = desktopIcons[i].getAttribute("path");
 
           console.log("an icon on the desktop is being setup with the path: " + path);
 
-          //this sets up the object so that it can be dragged
-          //the first argument is the object that is to be moved
-          //the second argument is the area in which if we click and hold we can drag the object
+          // This sets up the object so that it can be dragged
+          // The first argument is the object that is to be moved
+          // The second argument is the area in which if we click and hold we can drag the object
           dragElement(desktopIcons[i], desktopIcons[i]);
 
-          //Mobile browsers do not support double clicks, so it has to be a single click
+          // Mobile browsers do not support double clicks, so it has to be a single click
           let eventName = "dblclick";
           if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
             eventName = "click";
           }
 
-          //this sets up the double click to open folder/file
+          // This sets up the double click to open folder/file
           desktopIcons[i].addEventListener(eventName, function(event) {
 
             path = event.target.parentNode.getAttribute("path");
             console.log("An icon was double clicked on the desktop: " + path);
 
-            //if the path has a "." then it must be a file
+            // If the path has a "." then it must be a file
             if(path.includes(".")) {
               openFile(path);
             } else {
@@ -64,7 +64,7 @@
             }
           });
         }
-        //this runs updateClock() every 1000 millis
+        // This runs updateClock() every 1000 milliseconds
         setInterval(updateClock, 1000);
 
         // Opens the welcome page
@@ -73,7 +73,7 @@
     }
 
 
-    //this function updates the clock
+    // This function updates the clock
     function updateClock() {
       let clock = document.getElementById("systemClock");
       let date = new Date();
@@ -107,11 +107,11 @@
     }
 
 
-    //this function finds the highest z index out of all windows
-    //its used so that when a tab is clicked in the task manager it can
-    //be set to the highest z index, putting it in front of everything
+    // This function finds the highest z index out of all windows.
+    // This information is needed to help put windows in "focus" above
+    // other windows when clicked
     function findHighestZIndex() {
-      //gets all of the windows
+      // Gets all of the windows
       let windowElements = document.getElementsByClassName("draggableWindow");
       let highest = 0;
       for(let i=0; i < windowElements.length; i++) {
@@ -124,7 +124,7 @@
     }
 
 
-    //this puts the window in-front of everything else and also makes sure that it is visible
+    // This puts the window in-front of everything else and also makes sure that it is visible
     function focusWindow(windowID) {
       let windowToFocus = document.getElementById(windowID);
       console.log("will be made in focus: " + windowID);
@@ -133,22 +133,22 @@
     }
 
 
-    //this opens a new file manager at the given path
+    // This opens a new file manager at the given path
     function newExplorerWindow(path) {
       let menuBarTitle = document.createElement("div");
       let programContent = "explorer.html";
-      //the directory that the file explorer should go to is given in program arguments
+      // The directory that the file explorer should go to is given in program arguments
       let programArguments = "directory=" + path;
-      //this generates the navigation buttons in the top left of the file explorer
+      // This generates the navigation buttons in the top left of the file explorer
       let menuBarButtons = generateNavigationButtons("/", "");
-      //this makes a new window
+      // This makes a new window
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/system-file-manager.png", "File Manager", id);
     }
 
 
-    //This maps filenames that end in .url to URLs
+    // This maps filenames that end in .url to URLs
     function findURL(path) {
       switch(path) {
         case("/YouTube.url"):
@@ -176,7 +176,7 @@
           return "https://www.manchester.ac.uk/discover/key-dates/";
           break;
         case("/Music/Hacking Music.mp3"):
-          document.getElementById("main").style.backgroundImage = "url('resources/alt-wallpaper.jpg')"; //a little easter egg
+          document.getElementById("main").style.backgroundImage = "url('resources/alt-wallpaper.jpg')"; // a little easter egg
           return "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/707170303&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true";
           break;
         case("/Music/Crab Rave.mp3"):
@@ -195,12 +195,12 @@
     }
 
 
-    //These are used to tell the web browser what its previous page was
+    // These are used to tell the web browser what its previous page was
     var lastBrowserFrame = "";
     var nextBrowserFrame = "";
 
 
-    //This creates a new web browser window given the path of a file
+    // This creates a new web browser window given the path of a file
     function newBrowserWindow(path) {
       //there is sometimes an issue where there are too many /'s
       path = path.replaceAll("//", "/");
@@ -208,7 +208,7 @@
       let url = findURL(path);
       console.log("URL to navigate to: " + url);
 
-      //this creates the back button image and makes it go back when clicked
+      // This creates the back button image and makes it go back when clicked
       let menuBarButtonsBackIcon = document.createElement("img");
       menuBarButtonsBackIcon.src = "resources/go-previous-symbolic.svg";
       menuBarButtonsBackIcon.width = 20;
@@ -220,16 +220,16 @@
         console.log("changing URL to: " + lastBrowserFrame);
         embeddedWindow.src = lastBrowserFrame;
         document.getElementById("windowContent-" + localId);
-        //This finds the URL bar and sets it to the URL
+        // This finds the URL bar and sets it to the URL
         findObjectWithClassAndId("browserURLbar", localId).value = embeddedWindow.src;
       };
 
-      //this contains the back button and has the boarder line
+      // This contains the back button and has the boarder line
       let menuBarButtonsBack = document.createElement("div");
       menuBarButtonsBack.className = "menuBarButtons";
       menuBarButtonsBack.appendChild(menuBarButtonsBackIcon);
 
-      //this creates the forward button image and makes it go forwards when clicked
+      // This creates the forward button image and makes it go forwards when clicked
       let menuBarButtonsForwardIcon = document.createElement("img");
       menuBarButtonsForwardIcon.src = "resources/go-next-symbolic.svg";
       menuBarButtonsForwardIcon.width = 20;
@@ -240,22 +240,22 @@
         let embeddedWindow = document.getElementById("windowContent-" + localId);
         console.log("changing URL to: " + nextBrowserFrame);
         embeddedWindow.src = nextBrowserFrame;
-        //This finds the URL bar and sets it to the URL
+        // This finds the URL bar and sets it to the URL
         findObjectWithClassAndId("browserURLbar", localId).value = embeddedWindow.src;
       };
 
-      //this contains the forwards button and has the boarder line
+      // This contains the forwards button and has the boarder line
       let menuBarButtonsForward = document.createElement("div");
       menuBarButtonsForward.className = "menuBarButtons";
       menuBarButtonsForward.appendChild(menuBarButtonsForwardIcon);
 
-      //this contains both the forwards and back buttons
+      // This contains both the forwards and back buttons
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarButtonsContainer";
       menuBarButtons.appendChild(menuBarButtonsBack);
       menuBarButtons.appendChild(menuBarButtonsForward);
 
-      //This is the url/search box and sets up so it can be changed
+      // This is the url/search box and sets up so it can be changed
       let menuBarTitleURL = document.createElement("INPUT");
       menuBarTitleURL.type = "text";
       menuBarTitleURL.readOnly = false;
@@ -263,77 +263,77 @@
       menuBarTitleURL.className = "browserURLbar";
       menuBarTitleURL.defaultValue = url;
       menuBarTitleURL.onclick = function(e) {
-        //the input cannot be selected without this for some reason
+        // The input cannot be selected without this for some reason
         e.target.select();
       };
-      //we use this to listen for the enter key being pressed
+      // We use this to listen for the enter key being pressed
       menuBarTitleURL.onkeydown = function(event) {
         var windowId = findId(event.target);
         console.log("Id of clicked browser URL bar: " + windowId);
-        //we go to the URL if the user hits enter
+        // We go to the URL if the user hits enter
         if(event.key == "Enter") {
           console.log("The enter button has been pressed!");
           var embeddedWindow = document.getElementById("windowContent-" + windowId);
-          //we warn the user of the cross site scripting risk
+          // We warn the user of the cross site scripting risk
           if(!confirm("Security Risk!\n Visiting external sites in this browser is a security risk!\n Are you sure you wish to continue?")) {
             return;
           }
-          //we set this so that we can later go back to the old page
+          // We set this so that we can later go back to the old page
           lastBrowserFrame = embeddedWindow.src;
           console.log("lastBrowserFrame set as: " + lastBrowserFrame);
-          //this detects if the user entered a real URL, if not we Google what they typed
+          // This detects if the user entered a real URL, if not we Google what they typed
           if(event.target.value.includes("http")) {
-            //its a valid url
+            // If its a valid url
             console.log("The user has entered a valid URL: " + event.target.value);
-            //this takes the iframe to the new URL
+            // Take the iframe to the new URL
             embeddedWindow.src = event.target.value;
-            //this is set so that if we go back then forward we end up in the right place
+            // This is set so that if we go back then forward we end up in the right place
             nextBrowserFrame = event.target.value;
             console.log("nextBrowserFrame set as: " + nextBrowserFrame);
           } else {
-            //its not a valid URL, so we Google what they typed
-            //this is the formatting Google use in their search URLs
+            // Else the URL is not valid, so we Google what they typed
+            // This is the formatting Google use in their search URLs
             search = event.target.value.replaceAll(" ", "+");
             console.log("Navigating to Google Search for: " + search);
             nextBrowserFrame = "https://www.google.com/search?igu=1" + "&q=" + search;
             console.log("nextBrowserFrame set as: " + nextBrowserFrame);
-            //this takes the iframe to the new URL
+            // This takes the iframe to the new URL
             embeddedWindow.src = "https://www.google.com/search?igu=1" + "&q=" + search;
           }
         }
       };
 
-      //this is the container for the URL bar
+      // This is the container for the URL bar
       let menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.appendChild(menuBarTitleURL);
 
-      //this spawns a new window with our arguments
+      // This spawns a new window with our arguments
       const id = newWindow(menuBarButtons, menuBarTitle, url, "");
 
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/web-browser.png", "Web Browser", id);
     }
 
 
-    //This function opens a weather app/info page made by Harvey Mcglashan
-    //The windows are basically just embedded .html to make it easy for other group members to add content
-    //Its a shame no other group members bothered!
+    // This function opens a weather app/info page made by Harvey Mcglashan
+    // The windows are basically just embedded .html to make it easy for other group members to add content
+    // Its a shame no other group members bothered!
     function newWeatherPage() {
       let programContent = "Group Member Content/Harvey Mcglashan/weather.html";
       let programArguments = "";
       
-      //we don't have any custom buttons for the weather app/page
+      // We don't have any custom buttons for the weather app/page
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarFileButtonsContainer";
 
-      //this creates the title which is just "Weather Info"
+      // This creates the title which is just "Weather Info"
       menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.innerHTML = "Weather Info";
       
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/weather-showers-scattered.png", "Weather Info", id);
     }
 
@@ -352,29 +352,29 @@
       let programContent = "welcomePage.html";
       let programArguments = "";
       
-      //we don't have any custom buttons for the welcome page
+      // We don't have any custom buttons for the welcome page
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarFileButtonsContainer";
 
-      //this creates the title which is just "Weather Info"
+      // This creates the title which is simply "Welcome to UoM Linux"
       menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.innerHTML = "Welcome to Mini UoM Linux";
       
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/text-html.png", "Welcome", id);
 
       // Center the window in the middle of the desktop
       centerWindow(id);
     }
 
-    //This creates the buttons that shows the current and previous directory for the file explorer
-    //and also creates the back and forwards buttons
+    // This creates the buttons that shows the current and previous directory for the file explorer
+    // and also creates the back and forwards buttons
     function generateNavigationButtons(path) {
 
       console.log("The path given to generateNavigationButtons(): " + path);
-      //This code gives the names of the current and previous directories (without /'s)
+      // This code gives the names of the current and previous directories (without /'s)
       let temp = path.substring(path.lastIndexOf("/"));
       console.log("temp: " + temp);
       let currentDirectoryName = temp.substring(temp.lastIndexOf("/")+1);
@@ -391,7 +391,7 @@
         parentDirectoryName = "/";
       }
 
-      //This code loves to not work, so I have left this in for troubleshooting
+      // This code loves to not work, so I have left this in for troubleshooting
       /*
       console.log("genNav: currentDirectory: " + currentDirectory);
       console.log("genNav: currentDirectoryName: " + currentDirectoryName);
@@ -399,7 +399,7 @@
       console.log("genNav: parentDirectoryName: " + parentDirectoryName);
       */
 
-      //This is the code that generates the back button and sets its onclick
+      // This is the code that generates the back button and sets its onclick
       let backButtonContainer = document.createElement("div");
       backButtonContainer.className = "menuBarButtons";
       let backButtonIcon = document.createElement("img");
@@ -411,14 +411,14 @@
         let localId = findId(event.target);
         console.log("This explorer window should navigate back: " + localId);
         let embeddedWindow = document.getElementById("windowContent-" + localId);
-        //If we go back and there is nothing to go back to, it will go back on a different window, because browsers are cursed
+        // If we go back and there is nothing to go back to, it will go back on a different window, because browsers are cursed
         if(embeddedWindow.contentWindow.name != "/") {
           console.log("We can go back!");
           embeddedWindow.contentWindow.history.back();
         }
       };
 
-      //This is the code that generates the forwards button and sets its onclick
+      // This is the code that generates the forwards button and sets its onclick
       let forwardsButtonContainer = document.createElement("div");
       forwardsButtonContainer.className = "menuBarButtons";
       let forwardsButtonIcon = document.createElement("img");
@@ -430,34 +430,34 @@
         let localId = findId(event.target);
         console.log("This explorer window should navigate forwards: " + localId);
         let embeddedWindow = document.getElementById("windowContent-" + localId);
-        //If we go forward and there is nothing to go forward to, it will go forward on a different window, because browsers are cursed
+        // If we go forward and there is nothing to go forward to, it will go forward on a different window, because browsers are cursed
         if(embeddedWindow.contentWindow.name != "/") {
           console.log("We can go forward!");
           embeddedWindow.contentWindow.history.forward();
         }
       };
 
-      //This is the button/indicator that shows the parent directory
+      // This is the button/indicator that shows the parent directory
       let parentDirectoryButton = document.createElement("div");
       parentDirectoryButton.className = "menuBarButtons";
-      //Since / is our home directory
+      // Since / is our home directory
       if(parentDirectoryName == "/") {
         parentDirectoryButton.innerHTML = "Home";
       } else {
         parentDirectoryButton.innerHTML = parentDirectoryName;
       }
 
-      //This is the button/indicator that shows the current directory
+      // This is the button/indicator that shows the current directory
       let currentDirectoryButton = document.createElement("div");
       currentDirectoryButton.className = "menuBarButtons";
-      //This deals with an odd edge case
+      // This deals with an odd edge case
       if(currentDirectoryName == "") {
         currentDirectoryButton.innerHTML = "Home";
       } else {
         currentDirectoryButton.innerHTML = currentDirectoryName;
       }
 
-      //This contains all of the generated buttons
+      // This contains all of the generated buttons
       let navigationButtons = document.createElement("div");
       navigationButtons.className = "menuBarFileButtonsContainer";
       navigationButtons.style.float = "left";
@@ -465,11 +465,11 @@
 
       navigationButtons.appendChild(backButtonContainer);
       if(parentDirectoryName != "") {
-        //Since / is our root directory we don't add the parent directory button when navigating home
+        // Since / is our root directory we don't add the parent directory button when navigating home
         navigationButtons.appendChild(parentDirectoryButton);
       }
 
-      //This is the left most back button, it does the same as the other one
+      // This is the left most back button, it does the same as the other one
       let menuBarButtonsBack = document.createElement("div");
       menuBarButtonsBack.className = "menuBarButtons";
       let menuBarButtonsBackIcon = document.createElement("img");
@@ -481,14 +481,14 @@
         let localId = findId(event.target);
         console.log("This explorer window should navigate back: " + localId);
         let embeddedWindow = document.getElementById("windowContent-" + localId);
-        //If we go back and there is nothing to go back to, it will go back on a different window, because browsers are cursed
+        // If we go back and there is nothing to go back to, it will go back on a different window, because browsers are cursed
         if(embeddedWindow.contentWindow.name != "/") {
           console.log("We can go back!");
           embeddedWindow.contentWindow.history.back();
         }
       };
 
-      //This is the left most forward button, it does the same as the other one
+      // This is the left most forward button, it does the same as the other one
       let menuBarButtonsForwards = document.createElement("div");
       menuBarButtonsForwards.className = "menuBarButtons";
       let menuBarButtonsForwardsIcon = document.createElement("img");
@@ -500,14 +500,14 @@
         let localId = findId(event.target);
         console.log("This explorer window should navigate forwards: " + localId);
         let embeddedWindow = document.getElementById("windowContent-" + localId);
-        //If we go forward and there is nothing to go forward to, it will go forward on a different window, because browsers are cursed
+        // If we go forward and there is nothing to go forward to, it will go forward on a different window, because browsers are cursed
         if(embeddedWindow.contentWindow.name != "/") {
           console.log("We can go forward!");
           embeddedWindow.contentWindow.history.forward();
         }
       };
 
-      //This is where the left most back and forward buttons go
+      // This is where the left most back and forward buttons go
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarButtonsContainer";
       menuBarButtons.appendChild(menuBarButtonsBack);
@@ -521,69 +521,69 @@
     }
 
 
-    //This creates a new pdf browser window given the path of a file
-    //pdf windows are simply passing the pdf content through to the browser for it to handle
+    // This creates a new pdf browser window given the path of a file
+    // pdf windows are simply passing the pdf content through to the browser for it to handle
     function newPDFwindow(filepath) {
 
-      //there is sometimes an issue where there are too many /'s and we also need to remove the first /
+      // There is sometimes an issue where there are too many /'s and we also need to remove the first /
       filepath = filepath.replaceAll("//", "/").substring(1);
       console.log("PDF file to open: " + filepath);
 
-      //we dont have any custom buttons for pdf windows, its all handled by the browser
+      // We don't have any custom buttons for pdf windows, its all handled by the browser
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarFileButtonsContainer";
 
-      //this creates the title which is simple the path to the file
+      // This creates the title which is simple the path to the file
       let menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.innerHTML = filepath;
 
-      //we set the URL for the iframe to use as the PDF files path
+      // We set the URL for the iframe to use as the PDF files path
       let programContent = filepath;
       let programArguments = "";
 
-      //this spawns a new window with our arguments
+      // This spawns a new window with our arguments
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
       
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/x-office-document.png", "PDF Reader", id);
     }
 
 
-    //This creates a new image browser window given the path of a file
-    //image windows are simply passing the image content through to the browser for it to handle
+    // This creates a new image browser window given the path of a file
+    // image windows are simply passing the image content through to the browser for it to handle
     function newPictureWindow(filepath) {
 
-      //there is sometimes an issue where there are too many /'s and we also need to remove the first /
+      // There is sometimes an issue where there are too many /'s and we also need to remove the first /
       filepath = filepath.replaceAll("//", "/").substring(1);
       console.log("picture file to open: " + filepath);
 
-      //we dont have any custom buttons for image viewer windows, its all handled by the browser
+      // We don't have any custom buttons for image viewer windows, its all handled by the browser
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarFileButtonsContainer";
 
-      //this creates the title which is simple the path to the file
+      // This creates the title which is simple the path to the file
       let menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.innerHTML = filepath;
 
-      //we set the URL for the iframe to use as the image files path
+      // We set the URL for the iframe to use as the image files path
       let programContent = filepath;
       let programArguments = "";
 
-      //this spawns a new window with our arguments
+      // This spawns a new window with our arguments
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/x-office-drawing.png", "Picture", id);
     }
 
 
     function newDocumentWindow(filepath) {
 
-      //there is sometimes an issue where there are too many /'s
+      // There is sometimes an issue where there are too many /'s
       filepath = filepath.replaceAll("//", "/");
 
-      //this creates the "open" text and makes it open a new file explorer if clicked on
+      // This creates the "open" text and makes it open a new file explorer if clicked on
       let menuBarButtonsText = document.createElement("div");
       menuBarButtonsText.className = "menuBarButtons";
       menuBarButtonsText.innerHTML = "Open";
@@ -591,56 +591,57 @@
         newExplorerWindow("/");
       }
 
-      //this creates the icon that goes in the open button
+      // This creates the icon that goes in the open button
       let menuBarButtonsIcon = document.createElement("img");
       menuBarButtonsIcon.className = "menuBarButtons";
       menuBarButtonsIcon.src = "resources/pan-down-symbolic.svg";
 
-      //this is the container for the button and text for the open button
+      // This is the container for the button and text for the open button
       let menuBarButtons = document.createElement("div");
       menuBarButtons.className = "menuBarFileButtonsContainer";
       menuBarButtons.appendChild(menuBarButtonsText);
       menuBarButtons.appendChild(menuBarButtonsIcon);
 
-      //this makes the text that shows the name of the file that has been opened
+      // This makes the text that shows the name of the file that has been opened
       let menuBarTitleName = document.createElement("div");
       menuBarTitleName.className = "menuBarTitleName";
       documentTitle = filepath.substring(filepath.lastIndexOf("/")+1, filepath.indexOf("."));
       menuBarTitleName.innerHTML = documentTitle;
 
-      //this makes the text that shows the path of the file that has been opened
+      // This makes the text that shows the path of the file that has been opened
       let menuBarTitlePath = document.createElement("div");
       menuBarTitlePath.className = "menuBarTitlePath";
       menuBarTitlePath.innerHTML = "~" + filepath;
 
-      //this contains the title and path of the file thats open
+      // This contains the title and path of the file thats open
       let menuBarTitle = document.createElement("div");
       menuBarTitle.className = "menuBarTitle";
       menuBarTitle.appendChild(menuBarTitleName);
       menuBarTitle.appendChild(menuBarTitlePath);
 
-      //this sets the URL of the iframe
+      // This sets the URL of the iframe
       let programContent = "textedit.html";
-      //this will contain the path of the file we want to open, this is put in the name of the iframe window
+      // This will contain the path of the file we want to open, this is put in the name of the iframe window
       let programArguments = "directory=" + filepath;
       console.log("TextEdit given args: " + programArguments);
 
-      //this spawns a new window with our arguments
+      // This spawns a new window with our arguments
       const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
-      //this makes a new taskbar entry for the program
+      // This makes a new taskbar entry for the program
       newTask("resources/accessories-text-editor.png", "Document", id);
     }
 
 
 
-    //This function runs whenever the iframe of a window has a changed URL
-    //This happens when an explorer window navigates to a new directory
-    //This function is used to generate new navigation buttons so that they work when next pressed
+    // This function runs whenever the iframe of a window has a changed URL
+    // This happens when an explorer window navigates to a new directory or
+    // when the welcome window closes. This function is used to generate 
+    // new navigation buttons so that they work when next pressed and to allow
+    // the welcome page to open a new file explorer when it's closed
     function windowUpdate(localId) {
       console.log("a window has a new URL. window ID: " + localId);
      
-      //this gets the window that has been clicked and its iframe
-      //let window = document.getElementById("window-" + localId);
+      // This gets the window that has been clicked
       let embeddedWindow = document.getElementById("windowContent-" + localId);
       let url = new URL(embeddedWindow.src);
 
@@ -663,43 +664,43 @@
         return;
       }
 
-      //This is so that we ignore any non-explorer windows when they change URL
+      // This is so that we ignore any non-explorer windows when they change URL
       if(!embeddedWindow.contentWindow.location.pathname.toString().includes("/explorer.html")) {
         console.log("non-explorer window updated, ignoring!");
         return;
       }
 
-      //This gets the filepath of the current window from the name of the embedded window
+      // This gets the filepath of the current window from the name of the embedded window
       let path = embeddedWindow.contentWindow.name;
 
-      //If the path is of a file we open the file in a new window and tell the explorer to go back to where it was
+      // If the path is of a file we open the file in a new window and tell the explorer to go back to where it was
       if(path.includes(".")) {
         console.log("The user wants to open a file with a path of: " + path);
         openFile(path);
 
-        //We need to send the iframe back to its previous URL
+        // We need to send the iframe back to its previous URL
         embeddedWindow.contentWindow.history.back();
 
       } else {
-        //If we aren't dealing with a file we will need to update the navigation buttons and directory names
+        // If we aren't dealing with a file we will need to update the navigation buttons and directory names
         console.log("The user wants to open a folder with a path of: " + path);
         console.log("Replacing navigation buttons and names...");
-        //We make new nav buttons/directory names
+        // We make new nav buttons/directory names
         let newNavButtons = generateNavigationButtons(path);
-        //we set the id of the nav buttons/directory names so other functions can find them
+        // We set the id of the nav buttons/directory names so other functions can find them
         newNavButtons.id = "customMenuBarButtons-" + localId;
         let navButtonsParent = document.getElementById("menuBarCustomIconsContainer-" + localId);
         navButtons = document.getElementById("customMenuBarButtons-" + localId);
 
-        //we remove the old nav buttons/directory names
+        // We remove the old nav buttons/directory names
         navButtonsParent.removeChild(navButtons);
-        //we insert the new nav buttons/directory names
+        // We insert the new nav buttons/directory names
         navButtonsParent.appendChild(newNavButtons);
       }
     }
 
 
-    //This opens the given file in the appropriate program
+    // This opens the given file in the appropriate program
     function openFile(filepath) {
       console.log("Path of file to be opened in some program: " + filepath);
       if(filepath.includes(".txt")) {
@@ -729,42 +730,43 @@
     }
 
 
-    //This creates a new window given what buttons it should have, what title, what URL, and any special arguments
+    // This creates a new window given what buttons it should have, what title, what URL, and any special arguments
     function newWindow(customMenuBarButtons, customMenuBarTitle, programContent, programArguments) {
 
-      //The ID of this program is based on the current time so its always unique
+      // The ID of this program is based on the current time so its always unique
       const id = Date.now();
       console.log("New window ID: " + id);
 
-      //This sets how large the window is to be by default
+      // This sets how large the window is to be by default
       let windowWidth = 800;
       let windowHeight = 500;
 
-      //If the user is using a mobile browser windows should be smaller
+      // If the user is using a mobile browser windows should be smaller
       if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         windowWidth = 500;
         windowHeight = 300;
       }
 
-      //This is the iframe where programs are embedded into
+      // This is the iframe where programs are embedded into
       let embeddedWindow = document.createElement("iframe");
-      //the sandbox had to be disabled as otherwise pdf files will not load in chromium based browsers due to a bug
-      //which is why there is a warning if you try to navigate by manually setting a URL in the browser
-      //embeddedWindow.sandbox = "allow-modals allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation-by-user-activation";
+      // This no longer seems to be necessary
+      // The sandbox had to be disabled as otherwise pdf files will not load in chromium based browsers due to a bug
+      // which is why there is a warning if you try to navigate by manually setting a URL in the browser
+      // embeddedWindow.sandbox = "allow-modals allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation-by-user-activation";
       let embeddedWindowId = "windowContent-" + id;
       embeddedWindow.id = embeddedWindowId;
       embeddedWindow.className = "embeddedProgram";
-      //program arguments are encodes into the URL
+      // Program arguments are encodes into the URL
       embeddedWindow.src = programContent + "?" + programArguments;
       embeddedWindow.frameborder = "0";
-      //if the window changes URL a function will be called to figure out what to do
+      // If the window changes URL a function will be called to figure out what to do
       embeddedWindow.onload = function() { windowUpdate(id); };
 
-      //this makes sure that we don't have any padding or a margin
+      // This makes sure that we don't have any padding or a margin
       embeddedWindow.style.margin = "0px";
       embeddedWindow.style.padding = "0px";
 
-      //This creates the minimize button and sets its onclick
+      // This creates the minimize button and sets its onclick
       let menuBarMin = document.createElement("img");
       menuBarMin.className = "menuBarControlButtons";
       menuBarMin.src = "resources/window-minimize-symbolic.svg";
@@ -775,17 +777,17 @@
         programWindow.style.display = "none";
       };
 
-      //This creates the maximize button and sets its onclick
+      // This creates the maximize button and sets its onclick
       let menuBarMax = document.createElement("img");
       menuBarMax.className = "menuBarControlButtons";
       menuBarMax.src = "resources/window-maximize-symbolic.svg";
-      //This makes the window as large as it can be and centers it
+      // This makes the window as large as it can be and centers it
       menuBarMax.onclick = function(event) {
         let eventId = findId(event.target);
         console.log("This window is to be maximized: " + eventId);
         let programWindow = document.getElementById("window-" + eventId);
         if(parseInt(programWindow.style.width) > 900) {
-          //if the window is already maximized this will shrink it
+          // If the window is already maximized this will shrink it
           programWindow.style.width = 800;
           programWindow.style.height = 500 - 30 - 40; //-30 and -40 account for the top menu and taskbar
         } else {
@@ -796,18 +798,18 @@
         }
       };
 
-      //This creates the minimize button and sets its onclick
+      // This creates the minimize button and sets its onclick
       let menuBarExit = document.createElement("img");
       menuBarExit.className = "menuBarControlButtons";
       menuBarExit.src = "resources/window-close-symbolic.svg";
-      //This function finds the root of the window and then deletes it (it closes the window)
+      // This function finds the root of the window and then deletes it (it closes the window)
       menuBarExit.onclick = function(event){
         windowId = findId(event.target);
         console.log("This window is to be removed: " + windowId);
         closeWindow(windowId);
       }
 
-      //This creates the container of the min/max/close buttons
+      // This creates the container of the min/max/close buttons
       let menuBarIconContainer = document.createElement("div");
       menuBarIconContainer.style.float = "right";
       menuBarIconContainer.style.height = "30px";
@@ -818,18 +820,18 @@
       menuBarIconContainer.appendChild(menuBarMax);
       menuBarIconContainer.appendChild(menuBarExit);
 
-      //This creates the container of the custom program buttons such as the browsers back and forward buttons
+      // This creates the container of the custom program buttons such as the browsers back and forward buttons
       let menuBarCustomIconsContainer = document.createElement("div");
       menuBarCustomIconsContainer.id = "menuBarCustomIconsContainer-" + id;
       menuBarCustomIconsContainer.style.float = "left";
       menuBarCustomIconsContainer.style.height = "30px";
 
-      //We add the program specific icons to this window (specified in function arguments)
+      // We add the program specific icons to this window (specified in function arguments)
       customMenuBarButtons.id = "customMenuBarButtons-" + id;
       menuBarCustomIconsContainer.appendChild(customMenuBarButtons);
 
-      //This is the top bit of the window between the custom buttons and the program min/max/exit buttons
-      //This is the bit which the user can click and hold down and then move their mouse to drag the window
+      // This is the top bit of the window between the custom buttons and the program min/max/exit buttons
+      // This is the bit which the user can click and hold down and then move their mouse to drag the window
       let menuBarMoveObject = document.createElement("div");
       let draggableWindowHeaderId = "draggableWindowHeader-" + id;
       menuBarMoveObject.id = draggableWindowHeaderId
@@ -838,11 +840,11 @@
       menuBarMoveObject.style.width = "100%";
       menuBarMoveObject.style.height = "40px";
 
-      //We add the program specific title to it (specified in function arguments)
-      //e.g in text edit this would be the file name and the path to the file
+      // We add the program specific title to it (specified in function arguments)
+      // e.g in text edit this would be the file name and the path to the file
       menuBarMoveObject.appendChild(customMenuBarTitle);
 
-      //This will contain all the custom buttons, the title area, and the min/max/exit buttons
+      // This will contain all the custom buttons, the title area, and the min/max/exit buttons
       let menuBarContainer = document.createElement("div");
 
       let menuBarContainerId = "windowMenuBar-" + id;
@@ -853,8 +855,8 @@
       menuBarContainer.appendChild(menuBarIconContainer);
       menuBarContainer.appendChild(menuBarMoveObject);
 
-      //This creates the child of the window object
-      //This exists so that the gap between it and its parent can be used for expanding/shrinking the window
+      // This creates the child of the window object
+      // This exists so that the gap between it and its parent can be used for expanding/shrinking the window
       let draggableObjectId = "draggableWindow-" + id;
       let innerWindowHTML = document.createElement("div");
       innerWindowHTML.id = draggableObjectId;
@@ -862,14 +864,14 @@
       innerWindowHTML.appendChild(menuBarContainer);
       innerWindowHTML.appendChild(embeddedWindow);
 
-      //If the user is on a mobile browser the padding needs to be bigger so they can resize
+      // If the user is on a mobile browser the padding needs to be bigger so they can resize
       innerWindowHTML.style.padding = "5px";
       if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         innerWindowHTML.style.padding = "15px";
       }
 
-      //This creates the main window object, this is the parent of all the window content
-      //The bit of this div that is exposed acts as the area you drag to expand or shrink it
+      // This creates the main window object, this is the parent of all the window content
+      // The bit of this div that is exposed acts as the area you drag to expand or shrink it
       let windowHTML = document.createElement("div");
       let windowHTMLId = "window-" + id;
       windowHTML.className = "draggableWindow";
@@ -879,23 +881,23 @@
       windowHTML.style.background = "#F2F2F2";
       windowHTML.style.width = windowWidth;
       windowHTML.style.height = windowHeight;
-      //This puts the new window above everything else so its in focus
+      // This puts the new window above everything else so its in focus
       windowHTML.style.zIndex = findHighestZIndex() + 1;
 
       windowHTML.appendChild(innerWindowHTML);
 
       let mainPage = document.getElementById("main");
-      //This adds the new window to the main page
+      // This adds the new window to the main page
       mainPage.appendChild(windowHTML);
 
-      //This executes the code that makes this window movable
-      //the first argument is the window that is to be moved
-      //the second argument is the area in which if we click and hold we can drag the window
+      // This executes the code that makes this window movable
+      // the first argument is the window that is to be moved
+      // the second argument is the area in which if we click and hold we can drag the window
       dragElement(document.getElementById(windowHTMLId), document.getElementById(draggableWindowHeaderId));
 
-      //This executes the code that makes this window expandable and shrinkable
-      //the first argument is the area that is to be expanded/shrunk
-      //the second argument is the area in which if we click and hold we can resize the window
+      // This executes the code that makes this window expandable and shrinkable
+      // the first argument is the area that is to be expanded/shrunk
+      // the second argument is the area in which if we click and hold we can resize the window
       expandShrinkElement(document.getElementById(windowHTMLId), document.getElementById(draggableObjectId));
 
       return id;
@@ -909,7 +911,7 @@
     }
 
 
-    //This creates a task and puts it on the taskbar
+    // This creates a task and puts it on the taskbar
     function newTask(icon, text, windowID) {
 
       console.log("We are adding a program to the taskbar with this id: " + windowID);
@@ -919,37 +921,37 @@
       let taskId = "taskId-" + windowID;
       console.log("The new task is to be assigned the ID: " + taskId);
       taskContainer.id = taskId
-      //If a task is clicked on it will put its associated window in focus
+      // If a task is clicked on it will put its associated window in focus
       taskContainer.onclick = function() {
         focusWindow(windowID);
       };
 
-      //This sets up the task icon
+      // This sets up the task icon
       let taskIcon = document.createElement("img");
       taskIcon.src = icon;
       taskIcon.className = "task_icon";
-      //If a task is clicked on it will put its associated window in focus
+      // If a task is clicked on it will put its associated window in focus
       taskIcon.onclick = function() {
         focusWindow(windowID);
       };
-      //This sets up the name of the task
+      // This sets up the name of the task
       let taskText = document.createElement("div");
       taskText.className = "task_text";
       taskText.innerHTML = text;
-      //If a task is clicked on it will put its associated window in focus
+      // If a task is clicked on it will put its associated window in focus
       taskText.onclick = function() {
         focusWindow(windowID);
       };
-      //this adds the task name and task icon to the task container
+      // This adds the task name and task icon to the task container
       taskContainer.appendChild(taskIcon);
       taskContainer.appendChild(taskText);
 
-      //this adds the new task to the taskbar
+      // This adds the new task to the taskbar
       taskbar.appendChild(taskContainer);
     }
 
 
-    //This function will check its parent, then its parent, then its parent, until it finds a numeric id
+    // This function will check its parent, then its parent, then its parent, until it finds a numeric id
     function findId(element) {
       let parent = element;
       while(parent.id.replace(/[^0-9]/g, "") == "") {
@@ -960,8 +962,9 @@
     }
 
 
-    //Given a class name it will find the ID of a parent and if it matches it will return that object
-    //This is used to get the object of the title bar in the browser, it doesnt have an ID but its parent does, and we need to make sure we get the right browser title
+    // Given a class name it will find the ID of a parent and if it matches it will return that object
+    // This is used to get the object of the title bar in the browser, it doesn't have an ID but its parent
+    // does, and we need to make sure we get the right browser title
     function findObjectWithClassAndId(className, searchId) {
       let searchPool = document.getElementsByClassName(className);
       for(i=0; i < searchPool.length; i++) {
@@ -972,7 +975,7 @@
     }
 
 
-    //this is used so that we dont select other windows or their iframes while dragging or resizing
+    // This is used so that we don't select other windows or their iframes while dragging or resizing
     function makeAllWindowsUnselectable() {
       let parentWindows = document.getElementsByClassName("draggableWindow");
       for(i=0; i < parentWindows.length; i++) {
@@ -985,7 +988,7 @@
     }
 
 
-    //this makes all windows selectable again
+    // This makes all windows selectable again
     function makeAllWindowsSelectable() {
       let parentWindows = document.getElementsByClassName("draggableWindow");
       for(i=0; i < parentWindows.length; i++) {
@@ -998,10 +1001,10 @@
     }
 
 
-    //this sets up the object so that it can be dragged
-    //the first argument is the object that is to be moved
-    //the second argument is the area in which if we click and hold we can drag the object
-    //This function is a modification of https://stackoverflow.com/questions/4585571/drag-and-drop-feature-in-javascript (the solution not question)
+    // This sets up the object so that it can be dragged
+    // The first argument is the object that is to be moved
+    // The second argument is the area in which if we click and hold we can drag the object
+    // This function is a modification of https://stackoverflow.com/questions/4585571/drag-and-drop-feature-in-javascript (the solution not question)
     function dragElement(element, elementTrigger) {
       console.log("This element is to be setup to allow dragging: " + element.id);
       let dragId = "";
@@ -1012,44 +1015,44 @@
 
       elementTrigger.onpointerdown = dragMouseDown;
 
-      //This triggers when the mouse is being held down over the object
+      // This triggers when the mouse is being held down over the object
       function dragMouseDown(event) {
 
         let dragId = findId(event.srcElement);
         console.log("window with this id is to be dragged: " + dragId);
 
         event.preventDefault();
-        //This gets the cursor position when they started holding down
+        // This gets the cursor position when they started holding down
         pos3 = event.clientX;
         pos4 = event.clientY;
 
-        //This is so that the user can select the search bar in the browser
+        // This is so that the user can select the search bar in the browser
         if(event.target.className == "browserURLbar") {
           return;
         }
 
-        //If the user is dragging an icon and not a window then this will error out
+        // If the user is dragging an icon and not a window then this will error out
         try {
-          //While we are dragging we dont want to user to accidentally select the window content
-          //If the user accidentally navigates to the iframe document.onpointerup doesnt work
+          // While we are dragging we don't want to user to accidentally select the window content
+          // If the user accidentally navigates to the iframe document.onpointerup doesn't work
           makeAllWindowsUnselectable();
 
-          //This will only run if its not an icon, if it was it would have errored
-          //This puts the window being moved into focus
+          // This will only run if its not an icon, if it was it would have errored
+          // This puts the window being moved into focus
           focusWindow("window-" + dragId);
 
         } catch(e) {
-          console.log("Ther user is dragging an icon so we shouldnt make an iframe unclickable: " + e)
+          console.log("The user is dragging an icon so we shouldn't make an iframe un-clickable: " + e)
         }
 
-        //when the mouse is unclicked we stop moving
+        // When the mouse is un-clicked we stop moving
         document.onpointerup = closeDragElement;
-       //when the mouse moves we need to move the window
+       // When the mouse moves we need to move the window
         document.onpointermove = elementDrag;
       }
 
-      //This triggers while the mouse is held down and the mouse is moving
-      //Logging in this function can reduce performance, so its commented out when not debugging
+      // This triggers while the mouse is held down and the mouse is moving
+      // Logging in this function can reduce performance, so its commented out when not debugging
       function elementDrag(event) {
         //console.log("Draggable object being dragged: " + dragId);
 
@@ -1061,19 +1064,19 @@
 
         //console.log("new top: " + (element.offsetTop - pos2) + "px");
         //console.log("new left: " + (element.offsetLeft - pos1) + "px");
-        //This sets the objects new position:
+        // This sets the objects new position:
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
       }
 
       function closeDragElement(event) {
-        //When the mouse is released we stop and reset back to where we were
+        // When the mouse is released we stop and reset back to where we were
         document.onpointerup = null;
         document.onpointermove = null;
 
-        //If the user is dragging an icon and not a window then this will error out
+        // If the user is dragging an icon and not a window then this will error out
         try {
-          //We let the user select objects in the window now we are done dragging
+          // We let the user select objects in the window now we are done dragging
           makeAllWindowsSelectable();
           console.log("The user has stopped dragging a window");
         } catch(e) {
@@ -1083,16 +1086,16 @@
     }
 
 
-    //This executes the code that makes this window expandable and shrinkable
-    //the first argument is the area that is to be expanded/shrunk
-    //the second argument is the area in which if we click and hold we can resize the window
-    //This function is a heavy modification of https://stackoverflow.com/questions/4585571/drag-and-drop-feature-in-javascript (the solution not question)
+    // This executes the code that makes this window expandable and shrinkable
+    // the first argument is the area that is to be expanded/shrunk
+    // the second argument is the area in which if we click and hold we can resize the window
+    // This function is a heavy modification of https://stackoverflow.com/questions/4585571/drag-and-drop-feature-in-javascript (the solution not question)
     function expandShrinkElement(element, triggerElement) {
 
       let resizeId = "";
       console.log("This element is to be setup to allow resizing: " + element.id);
 
-      //This gets the size of the window as a rectangle
+      // This gets the size of the window as a rectangle
       let rect = element.getBoundingClientRect();
       let beforeX = rect.left;
       let beforeY = rect.top;
@@ -1100,7 +1103,7 @@
 
       triggerElement.onpointerdown = expandShrinkMouseDown;
 
-      //This triggers when the mouse is clicked down
+      // This triggers when the mouse is clicked down
       function expandShrinkMouseDown(event) {
         console.log("The window clicked on in the resize area: " + event.target.id);
         event.preventDefault();
@@ -1109,24 +1112,24 @@
 
         if(event.target != event.currentTarget) {
           console.log("we have the wrong window")
-          return; //This is so that the drag window works, otherwise the listener for dragging and the listener for resizing both run at the same time
+          return; // This is so that the drag window works, otherwise the listener for dragging and the listener for resizing both run at the same time
         }
 
-        //Since its being resized it should be the window in focus
+        // Since its being resized it should be the window in focus
         focusWindow("window-" + resizeId);
 
-        //While we are resizing we don't want to user to accidentally select the window content
-        //if the user accidentally navigates to the iframe document.onpointerup doesn't work
+        // While we are resizing we don't want to user to accidentally select the window content
+        // If the user accidentally navigates to the iframe, document.onpointerup doesn't work
         makeAllWindowsUnselectable();
 
-        //when the mouse is un-clicked we stop resizing
+        // When the mouse is un-clicked we stop resizing
         document.onpointerup = closeExpandShrinkElement;
-        //when the mouse moves we need to resize the window
+        // When the mouse moves we need to resize the window
         document.onpointermove = elementExpandShrink;
       }
 
-      //This triggers when the mouse moves and the mouse is clicked
-      //Logging in this function can reduce performance, so its commented out when not debugging
+      // This triggers when the mouse moves and the mouse is clicked
+      // Logging in this function can reduce performance, so its commented out when not debugging
       function elementExpandShrink(event) {
         let programWindow = document.getElementById("window-" + resizeId);
         //console.log("window id that is to be resized: " + programWindow.id);
@@ -1156,12 +1159,12 @@
       }
 
       function closeExpandShrinkElement() {
-        //We need to stop resizing when the mouse is released
+        // We need to stop resizing when the mouse is released
         console.log("The mouse has been released!");
         document.onpointerup = null;
         document.onpointermove = null;
 
-        //We let the user select objects in the window now we are done resizing
+        // We let the user select objects in the window now we are done resizing
         makeAllWindowsSelectable();
       }
     }
@@ -1349,14 +1352,14 @@
         font-family: 'Cantarell', sans-serif;
       }
 
-      /* This is used specifically for the text editor so that it may have a differentley styled file name and url path */
+      /* This is used specifically for the text editor so that it may have a differently styled file name and url path */
       .menuBarTitleName {
         color: black;
         font-weight: bold;
         font-family: 'Cantarell', sans-serif;
       }
 
-      /* This is used specifically for the text editor so that it may have a differentley styled file name and url path */
+      /* This is used specifically for the text editor so that it may have a differently styled file name and url path */
       .menuBarTitlePath {
         color: grey;
         font-family: 'Cantarell', sans-serif;
