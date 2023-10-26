@@ -66,6 +66,9 @@
         }
         //this runs updateClock() every 1000 millis
         setInterval(updateClock, 1000);
+
+        // Opens the welcome page
+        newWelcomePage();
       }
     }
 
@@ -313,7 +316,7 @@
     }
 
 
-    //This functions opens a weather app/info page made by Harvey Mcglashan
+    //This function opens a weather app/info page made by Harvey Mcglashan
     //The windows are basically just embedded .html to make it easy for other group members to add content
     //Its a shame no other group members bothered!
     function newWeatherPage() {
@@ -334,6 +337,37 @@
       newTask("resources/weather-showers-scattered.png", "Weather Info", id);
     }
 
+
+    // This function centers a window in the middle of the desktop area, or close to it anyway
+    function centerWindow(id) {
+      desktopArea = document.getElementById("main");
+      targetWindow = document.getElementById("window-" + id);
+      targetWindow.style.top = ((desktopArea.clientHeight / 2) - (targetWindow.clientHeight/2)) + "px";
+      targetWindow.style.left = ((desktopArea.clientWidth / 2) - (targetWindow.clientWidth/2)) + "px";
+    }
+
+
+    // This function opens the welcome page which explains exactly what the website is
+    function newWelcomePage() {
+      let programContent = "welcomePage.html";
+      let programArguments = "";
+      
+      //we don't have any custom buttons for the welcome page
+      let menuBarButtons = document.createElement("div");
+      menuBarButtons.className = "menuBarFileButtonsContainer";
+
+      //this creates the title which is just "Weather Info"
+      menuBarTitle = document.createElement("div");
+      menuBarTitle.className = "menuBarTitle";
+      menuBarTitle.innerHTML = "Welcome to Mini UoM Linux";
+      
+      const id = newWindow(menuBarButtons, menuBarTitle, programContent, programArguments);
+      //this makes a new taskbar entry for the program
+      newTask("resources/text-html.png", "Welcome", id);
+
+      // Center the window in the middle of the desktop
+      centerWindow(id);
+    }
 
     //This creates the buttons that shows the current and previous directory for the file explorer
     //and also creates the back and forwards buttons
@@ -601,17 +635,37 @@
 
     //This function runs whenever the iframe of a window has a changed URL
     //This happens when an explorer window navigates to a new directory
-    //This function is used to generate new nagivation buttons so that they work when next pressed
+    //This function is used to generate new navigation buttons so that they work when next pressed
     function windowUpdate(localId) {
-      console.log("a window has a new URL: " + localId);
-
+      console.log("a window has a new URL. window ID: " + localId);
+     
       //this gets the window that has been clicked and its iframe
-      let window = document.getElementById("window-" + localId);
+      //let window = document.getElementById("window-" + localId);
       let embeddedWindow = document.getElementById("windowContent-" + localId);
+      let url = new URL(embeddedWindow.src);
+
+      // If the windows new URL is not the same as the main domain we don't care about any updates
+      if(url.hostname !== window.location.hostname) {
+        return;
+      }
+
+      console.log("Window navigated to: " + embeddedWindow.contentWindow.location.pathname.toString());
+
+      // If the window has changed its URL to the cat this signals to close the window
+      // This is a bit of a hack, ideally I would make the programs call each other or use
+      // the messaging system, but this is way easier, and more fun!
+
+      // We also open a file explorer as this is currently only used by the welcome screen
+      // and we want the file explorer to open when they finish the welcome/tutorial screen
+      if(embeddedWindow.contentWindow.location.pathname.toString().endsWith("/resources/cat.webp")) {
+        closeWindow(localId);
+        newExplorerWindow("/");
+        return;
+      }
 
       //This is so that we ignore any non-explorer windows when they change URL
-      if(!embeddedWindow.src.includes("explorer")) {
-        console.log("non-explorer window updated, ignoring");
+      if(!embeddedWindow.contentWindow.location.pathname.toString().includes("/explorer.html")) {
+        console.log("non-explorer window updated, ignoring!");
         return;
       }
 
@@ -627,7 +681,7 @@
         embeddedWindow.contentWindow.history.back();
 
       } else {
-        //If we arent dealing with a file we will need to update the navigation buttons and directory names
+        //If we aren't dealing with a file we will need to update the navigation buttons and directory names
         console.log("The user wants to open a folder with a path of: " + path);
         console.log("Replacing navigation buttons and names...");
         //We make new nav buttons/directory names
@@ -679,7 +733,7 @@
     function newWindow(customMenuBarButtons, customMenuBarTitle, programContent, programArguments) {
 
       //The ID of this program is based on the current time so its always unique
-      let id = Date.now();
+      const id = Date.now();
       console.log("New window ID: " + id);
 
       //This sets how large the window is to be by default
@@ -748,10 +802,9 @@
       menuBarExit.src = "resources/window-close-symbolic.svg";
       //This function finds the root of the window and then deletes it (it closes the window)
       menuBarExit.onclick = function(event){
-        eventId = findId(event.target);
-        console.log("This window is to be removed: " + eventId);
-        removeTask("window-" + eventId);
-        document.getElementById("window-" + eventId).remove();
+        windowId = findId(event.target);
+        console.log("This window is to be removed: " + windowId);
+        closeWindow(windowId);
       }
 
       //This creates the container of the min/max/close buttons
@@ -845,14 +898,14 @@
       //the second argument is the area in which if we click and hold we can resize the window
       expandShrinkElement(document.getElementById(windowHTMLId), document.getElementById(draggableObjectId));
 
-      return windowHTMLId;
+      return id;
     }
 
 
-    //This removes a task from the taskbar given an id
-    function removeTask(localId) {
-      let task = document.getElementById("taskId-" + localId);
-      task.remove();
+    // This closes/removes a window and removes its entry in the taskbar
+    function closeWindow(id) {
+      document.getElementById("window-" + id).remove();
+      document.getElementById("taskId-" + id).remove();
     }
 
 

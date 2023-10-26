@@ -1,0 +1,301 @@
+
+<div id="main">
+
+    <meta name="author" content="Harvey Lelliott">
+
+    <div id="textWindow" onload="onLoad();">
+
+        <div id="pageZero" class="welcomePage">
+
+            <div class="welcomePageTitle"> 
+                Welcome
+            </div>
+
+            <div class="welcomePageContent">
+
+                This is a website I developed as a foundation year student at the University of Manchester in 2021 as part of a group project. 
+                <br>
+                <br>
+                I (somewhat) continue to maintain it to this day because I made it quite early in my programming career and I feel it still holds up to this day, I am quite proud of it.
+
+            </div>
+        </div>
+
+        <div id="pageOne" class="welcomePage hidden">
+
+            <div class="welcomePageTitle"> 
+                What
+            </div>
+
+            <div class="welcomePageContent">
+
+                The goal of the project was to create a website to help students new to the foundation year find documents, relevant material, and insight from current students.
+                <br>
+                <br>
+                As I was already an experienced developer I wanted to push the limits to improve my skills and understanding, therefore I decided to develop a website which mimics the university's Linux distribution and embed documents, images, and videos into the file system.
+                <br>
+                <br>
+                If group members had shown up to even a single meeting, or if the instructors had even glanced at my screen, or if the specification provided any guidance regarding user interface then this would not have happened.  ¯\_(ツ)_/¯
+
+            </div>
+        </div>
+
+        <div id="pageTwo" class="welcomePage hidden">
+
+            <div class="welcomePageTitle"> 
+                How
+            </div>
+
+            <div class="welcomePageContent">
+
+                Thousands of lines of JavaScript, CSS, and HTML.
+                <br>
+                <br>
+                This website heavily applies the principles of object oriented programming to avoid it becoming an incomprehensible mess. 
+                <br>
+                <br>
+                The programs that you see are other websites embedded in the main site and the main site handles the tricky things like window management, the taskbar, and other boring things. This means that other members could independently develop their own pages and more or less just put them in the file structure for them to be included in the site, if only they had bothered.
+
+            </div>
+        </div>
+
+        <div id="pageThree" class="welcomePage hidden">
+
+            <div class="welcomePageTitle"> 
+                Explore
+            </div>
+
+            <div class="welcomePageContent">
+
+                That's enough introduction from me, now go check out the site, it navigates more or less just like any Linux desktop, so go nuts.
+                <br style="line-height: 15px;">
+                <ul>
+                    <li>
+                        Open the File Manager to navigate around the virtual file structure, view documents, open images, watch videos. 
+                    </li>
+                    <br style="line-height: 15px;">
+                    <li>
+                        Drag windows around, put them side by side, overlay them, even resize them, it's all supported.
+                    </li>
+                    <br style="line-height: 15px;">
+                    <li>
+                        Have a look around for easter eggs, there are quite a few.
+                    </li>
+                </ul>
+            
+            </div>
+        </div>
+
+    </div>
+
+    <div id="bottomWindow">
+
+        <div id="bottomWindowContainer">
+
+            <button class="wideButton" onclick="previous()">
+                Previous
+            </button>
+
+            <span class="welcomeProgressContainer" style="display:inline-block; vertical-align: middle; width:calc(100% - 190px);"> 
+
+                <div id="currentPageIndicator">
+                    <span class="dot selected"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span> 
+                </div>
+
+            </span>
+            
+            <button class="wideButton default" onclick="next()">
+                Next
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+    /* This is the root element */
+    #main {
+        height: 100%;
+        width: 100%;
+    }
+
+    /* This is the styling for the div that holds the welcome pages*/
+    #textWindow {
+        font-size: 16px;
+        font-family: 'Cantarell', sans-serif;
+        overflow-y: hidden;
+        padding: 20px;
+    }
+    
+    /* This is the styling for the menu bar at the bottom */
+    #bottomWindow {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+    }
+
+    /* This is the styling for the previous and next buttons */
+    .wideButton {
+        display: inline-block;
+        width: 90px;
+        padding: 10px;
+        font-family: 'Cantarell', sans-serif;
+        font-size: small;
+        border: 1px solid #d3d3d3;
+        border-radius: 4px;
+        background-color: #fcfcfc;
+        text-align: center;
+        color: #3c3b38;
+    }
+
+    /* This is the same as the style above but green for the next button */
+    .wideButton.default {
+        background-color: #0d841e; 
+        color: #fafafa;
+    }
+
+    /* This is the style for the dots which indicate the active page */
+    .dot {
+        height: 10px;
+        width: 10px;
+        top:50%;
+        margin-left: 4px;
+        margin-right: 4px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* This is the style for a selected dot */
+    .dot.selected {
+        background-color: #0d841e; 
+    }
+
+    /* This is the style for the element which contains the active page indicators */
+    #currentPageIndicator {
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+    }
+
+    /* This is the style for the pages which hold the welcome text */
+    .welcomePage {
+        visibility: visible;
+    }
+
+    /* Same as above but invisible and with no height, to hide the other pages */
+    .welcomePage.hidden {
+        visibility: hidden;
+        height: 0px;
+    }
+
+    /* This is the style for the title on each page */
+    .welcomePageTitle {
+        font-size: xx-large;
+        font-weight: bold;
+    }
+
+    /* This is the style for the text on each page */
+    .welcomePageContent {
+        padding-top: 20px;
+        font-size: large;
+    }
+
+</style>
+
+<script>
+
+    //This is needed when hosted on the University Of Manchester's Personal Pages 
+    //The onload in the main element doesn't work for some reason
+    window.onload = function() {
+        onLoad();
+    }
+
+
+    // This runs when the window loads and loads the content
+    function onLoad() {
+        console.log("Welcome Page is running!");
+    }
+
+
+    // This holds the index of the currently loaded page
+    var currentPage = 0;
+
+
+    // This sets the page indicator to the given index
+    function setPageIndicator(index) {
+        current = document.getElementsByClassName("dot selected")[0];
+        current.classList.toggle("selected");
+        all = document.getElementsByClassName("dot");
+        all[index].classList.toggle("selected");
+    }
+
+
+    // This makes the page at the given index visible and hides the others
+    function makePageVisible(index) {
+        // Make all pages invisible
+        pages = document.getElementsByClassName("welcomePage");
+        for(i = 0; i < pages.length; i++) {
+            if(pages[i].className === "welcomePage") {
+                pages[i].classList.add("hidden")
+            }
+        }
+        pages[index].classList.remove("hidden");
+    }
+
+
+    // This is called by the next button to increment the current page or close
+    // the program
+    function next() {
+        
+        currentPage++;
+        
+        // If we are on the last page set the next buttons text to "Close"
+        if(currentPage == 3) {
+            button = document.getElementsByClassName("wideButton default")[0];
+            button.textContent = "Close";
+        }
+
+        // If we have ran out of pages close the welcome menu
+        // This is done by setting a URL which tells the main program to close the window
+        if(currentPage > 3) {
+            location.href = "resources/cat.webp";
+            return;
+        }
+
+        // Update the screen
+        makePageVisible(currentPage);
+        setPageIndicator(currentPage);
+    }
+
+
+    function previous() {
+        
+        // If we are at the first page do nothing
+        if(currentPage == 0) {
+            console.log("Cannot go back!");
+            return;
+        }  
+
+        // Update the screen
+        currentPage--;
+        makePageVisible(currentPage);
+        setPageIndicator(currentPage);
+
+        // If were previously on the last page we need to make the close button say next
+        if(currentPage == 2) {
+            button = document.getElementsByClassName("wideButton default")[0];
+            button.textContent = "Next";
+        }
+    }
+
+</script>
+        
