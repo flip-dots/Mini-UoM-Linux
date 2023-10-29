@@ -125,8 +125,9 @@
 
 
     // This puts the window in-front of everything else and also makes sure that it is visible
+    // Given the integer ID of the window
     function focusWindow(windowID) {
-      let windowToFocus = document.getElementById(windowID);
+      let windowToFocus = document.getElementById("window-" + windowID);
       console.log("will be made in focus: " + windowID);
       windowToFocus.style.zIndex = findHighestZIndex() + 1;
       windowToFocus.style.display = "block";
@@ -1039,7 +1040,7 @@
 
           // This will only run if its not an icon, if it was it would have errored
           // This puts the window being moved into focus
-          focusWindow("window-" + dragId);
+          focusWindow(dragId);
 
         } catch(e) {
           console.log("The user is dragging an icon so we shouldn't make an iframe un-clickable: " + e)
@@ -1116,7 +1117,7 @@
         }
 
         // Since its being resized it should be the window in focus
-        focusWindow("window-" + resizeId);
+        focusWindow(resizeId);
 
         // While we are resizing we don't want to user to accidentally select the window content
         // If the user accidentally navigates to the iframe, document.onpointerup doesn't work
